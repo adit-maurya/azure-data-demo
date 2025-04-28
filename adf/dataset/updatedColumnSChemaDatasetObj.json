@@ -1,0 +1,24 @@
+{
+	"name": "updatedColumnSChemaDatasetObj",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TokyoBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "olympic_outputdata",
+				"container": "blob-container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,70 @@
+{
+	"name": "SChemaUpdate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EntriesGenderDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "EntrieGender"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "EntryGenderTableDataset",
+						"type": "DatasetReference"
+					},
+					"name": "updatedColumnSchema"
+				}
+			],
+			"transformations": [
+				{
+					"name": "updatedcolumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Discipline as string,",
+				"          Female as string,",
+				"          Male as string,",
+				"          Total as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> EntrieGender",
+				"EntrieGender derive(Male = iif(isNull(Male), 0, toInteger(Male)),",
+				"          Total = iif(isNull(Total), 0, toInteger(Total)),",
+				"          Female = iif(isNull(Female), 0, toInteger(Female)),",
+				"     partitionBy('hash', 1)) ~> updatedcolumn",
+				"updatedcolumn sink(allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          Discipline as string,",
+				"          Female as integer,",
+				"          Male as integer,",
+				"          Total as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Discipline,",
+				"          Female,",
+				"          Male,",
+				"          Total",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> updatedColumnSchema"
+			]
+		}
+	}
+}

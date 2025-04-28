@@ -1,0 +1,62 @@
+{
+	"name": "Fetch_Gold_Medal_InOrder",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "FindGoldMedalCountry",
+						"type": "DataFlowReference",
+						"parameters": {
+							"limit": {
+								"value": "@pipeline().parameters.limit",
+								"type": "Expression"
+							},
+							"output_file_name": {
+								"value": "'@{pipeline().parameters.output_file_name}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"StoredSortedMedals": {
+								"output_file_name": {
+									"value": "@pipeline().parameters.output_file_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"limit": {
+				"type": "int",
+				"defaultValue": 10
+			},
+			"output_file_name": {
+				"type": "string",
+				"defaultValue": "gold_medal"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-04-21T05:06:56Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

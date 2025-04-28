@@ -1,0 +1,78 @@
+{
+	"name": "FindGoldMedalCountry",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "medal_source_dataset",
+						"type": "DatasetReference"
+					},
+					"name": "Medals"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MedalOutput",
+						"type": "DatasetReference"
+					},
+					"name": "StoredSortedMedals"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectGoldMedals",
+					"description": "Renaming source1 to select1 with columns TeamCountry, Gold"
+				},
+				{
+					"name": "SortedMedals"
+				},
+				{
+					"name": "HighestMedalCount"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     limit as integer,",
+				"     output_file_name as string",
+				"}",
+				"source(output(",
+				"          Rank as string,",
+				"          TeamCountry as string,",
+				"          Gold as long,",
+				"          Silver as string,",
+				"          Bronze as string,",
+				"          Total as string,",
+				"          {Rank by Total} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> Medals",
+				"Medals select(mapColumn(",
+				"          TeamCountry,",
+				"          Gold",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectGoldMedals",
+				"SelectGoldMedals window(desc(Gold, true),",
+				"     row_number = rowNumber()) ~> SortedMedals",
+				"SortedMedals filter(row_number <= $limit,",
+				"     partitionBy('hash', 1)) ~> HighestMedalCount",
+				"HighestMedalCount sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:[($output_file_name +'_'+ toString(currentUTC(), 'yyyyMMdd_HHmmss')+'.csv' )],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          TeamCountry,",
+				"          Gold",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> StoredSortedMedals"
+			]
+		}
+	}
+}

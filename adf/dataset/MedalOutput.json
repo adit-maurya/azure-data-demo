@@ -1,0 +1,30 @@
+{
+	"name": "MedalOutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TokyoBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"output_file_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "olympic_outputdata",
+				"container": "blob-container"
+			},
+			"columnDelimiter": ",",
+			"compressionCodec": null,
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDummyDataData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TokyoBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dummyuser.json",
+				"container": "blob-container"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

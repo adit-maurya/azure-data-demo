@@ -1,0 +1,50 @@
+{
+	"name": "CalculateAvgEntryByGender",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EntriesGenderDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "EntriesGender"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "EntriesGenderAvgCal",
+						"type": "DatasetReference"
+					},
+					"name": "SaveAvgResult"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AvgCalculation"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Discipline as string,",
+				"          Female as integer,",
+				"          Male as integer,",
+				"          Total as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EntriesGender",
+				"EntriesGender derive(AvgFemale = Female / Total,",
+				"          AvgMale = Male / Total) ~> AvgCalculation",
+				"AvgCalculation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:[('EntriesGenderAvgResult_'+ toString(currentTimestamp(), 'yyyyMMdd')+ '.csv')],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SaveAvgResult"
+			]
+		}
+	}
+}

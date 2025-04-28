@@ -1,0 +1,42 @@
+{
+	"name": "EntryGenderTableDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Discipline",
+				"type": "varchar"
+			},
+			{
+				"name": "Female",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Male",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Total",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EntryGender"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
